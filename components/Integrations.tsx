@@ -5,14 +5,16 @@ import { HouseMark, isHouse } from "./houseMarks";
 
 type App = { name: string; does: string };
 
-/** Ordered the way a directory surfaces them: most-reached-for first. */
-const APPS: App[] = [
-  // first-party, shown first
+/** Ours. They get their own shelf above the third-party directory. */
+const STRING_AGENTS: App[] = [
   { name: "MidEarth", does: "Connect your MidEarth workspace to your agents" },
   { name: "String Ecosystem", does: "Reach every String service from one chat" },
   { name: "MidEarth Fantasy", does: "Connect MidEarth Fantasy to your agents" },
   { name: "String BenPOS", does: "Connect String BenPOS to your agents" },
+];
 
+/** Ordered the way a directory surfaces them: most-reached-for first. */
+const APPS: App[] = [
   { name: "Google Drive", does: "Search, read, and upload files instantly" },
   { name: "Gmail", does: "Draft replies, summarize threads, & search your inbox" },
   { name: "Google Calendar", does: "Manage your schedule and coordinate meetings" },
@@ -87,6 +89,37 @@ function Verified() {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+/** One tile in either grid — same anatomy for ours and for the directory. */
+function DirCard({ app }: { app: App }) {
+  return (
+    <li className="dir-card">
+      <span className="dir-tile" aria-hidden="true">
+        <Mark name={app.name} />
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-1.5">
+          <span className="dir-name truncate">{app.name}</span>
+          <Verified />
+        </span>
+        <span className="dir-does">{app.does}</span>
+      </span>
+
+      <span className="dir-action" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="15" height="15">
+          <path
+            d="M8 3.2v9.6M3.2 8h9.6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+    </li>
   );
 }
 
@@ -167,6 +200,16 @@ export default function Integrations() {
           </div>
         </div>
 
+        {/* Ours sit above the third-party directory, on the same width as the
+            house rows above so the two read as one block. */}
+        <h3 className="dir-heading mt-10">String Agents</h3>
+
+        <ul className="mt-5 grid max-w-[54rem] grid-cols-1 gap-3.5 md:grid-cols-2">
+          {STRING_AGENTS.map((a) => (
+            <DirCard key={a.name} app={a} />
+          ))}
+        </ul>
+
         <div className="mt-10 flex items-baseline justify-between gap-6">
           <h3 className="dir-heading">Top connectors</h3>
           {/* a real destination, not a decorative link */}
@@ -182,31 +225,7 @@ export default function Integrations() {
 
         <ul className="mt-5 grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3">
           {APPS.map((a) => (
-            <li key={a.name} className="dir-card">
-              <span className="dir-tile" aria-hidden="true">
-                <Mark name={a.name} />
-              </span>
-
-              <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-1.5">
-                  <span className="dir-name truncate">{a.name}</span>
-                  <Verified />
-                </span>
-                <span className="dir-does">{a.does}</span>
-              </span>
-
-              <span className="dir-action" aria-hidden="true">
-                <svg viewBox="0 0 16 16" width="15" height="15">
-                  <path
-                    d="M8 3.2v9.6M3.2 8h9.6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-            </li>
+            <DirCard key={a.name} app={a} />
           ))}
         </ul>
       </div>
