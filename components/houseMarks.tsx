@@ -14,6 +14,7 @@ export const HOUSE_NAMES = [
   "String Ecosystem",
   "MidEarth Fantasy",
   "String BenPOS",
+  "String Signal AI",
   "Local VM",
 ] as const;
 
@@ -172,6 +173,60 @@ function StringBenPosMark({ size }: { size: number }) {
 }
 
 
+/** String Signal AI: the house ribbon S, with the signal breaking off its
+    inner fold — a dot and three arcs opening to the right, as in the mark. */
+function StringSignalAiMark({ size }: { size: number }) {
+  return (
+    <svg viewBox="0 0 64 64" width={size} height={size} focusable="false">
+      <defs>
+        <linearGradient id="he-ssa-a" x1="0.1" y1="1" x2="0.85" y2="0">
+          <stop offset="0%" stopColor="#FFC01F" />
+          <stop offset="46%" stopColor="#FF8A1F" />
+          <stop offset="100%" stopColor="#F4530A" />
+        </linearGradient>
+        <linearGradient id="he-ssa-b" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E8480C" />
+          <stop offset="100%" stopColor="#FF9A2E" />
+        </linearGradient>
+        <linearGradient id="he-ssa-wave" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stopColor="#F4530A" />
+          <stop offset="100%" stopColor="#FF9A2E" />
+        </linearGradient>
+      </defs>
+
+      {/* the ribbon, one continuous fold */}
+      <path
+        d="M33 13C24 7 11 10.5 11.5 19 12 27 24 28.5 29.5 33.5"
+        fill="none"
+        stroke="url(#he-ssa-a)"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      {/* the far face of the fold, turned away from the light */}
+      <path
+        d="M29.5 33.5C35.5 38.5 34.5 47 26 51 17.5 55 10.5 51 9 46.5"
+        fill="none"
+        stroke="url(#he-ssa-b)"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+
+      {/* the signal: emitter, then three arcs at widening radius */}
+      <circle cx="38.5" cy="32" r="3.4" fill="url(#he-ssa-wave)" />
+      <g
+        fill="none"
+        stroke="url(#he-ssa-wave)"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+      >
+        <path d="M43.1 25.4a8 8 0 0 1 0 13.2" />
+        <path d="M46 21.3a13 13 0 0 1 0 21.4" />
+        <path d="M48.8 17.2a18 18 0 0 1 0 29.6" />
+      </g>
+    </svg>
+  );
+}
+
 /** Local VM: a display with a second plate behind it and an isometric cube
     inside — the machine, and the box it is running. */
 function LocalVmMark({ size }: { size: number }) {
@@ -242,6 +297,7 @@ const DRAWN: Record<string, (p: { size: number }) => React.ReactElement> = {
   "MidEarth Fantasy": MidEarthFantasyMark,
   "String Ecosystem": StringEcosystemMark,
   "String BenPOS": StringBenPosMark,
+  "String Signal AI": StringSignalAiMark,
   "Local VM": LocalVmMark,
 };
 

@@ -11,6 +11,7 @@ const STRING_AGENTS: App[] = [
   { name: "String Ecosystem", does: "Reach every String service from one chat" },
   { name: "MidEarth Fantasy", does: "Connect MidEarth Fantasy to your agents" },
   { name: "String BenPOS", does: "Connect String BenPOS to your agents" },
+  { name: "String Signal AI", does: "Turn live signals into agent actions" },
 ];
 
 /** Ordered the way a directory surfaces them: most-reached-for first. */
