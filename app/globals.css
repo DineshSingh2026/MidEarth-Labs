@@ -1,0 +1,1023 @@
+@import "tailwindcss";
+
+/* ── Palette lifted from the reference system ───────────────────────────── */
+:root {
+  --ink: #06070a;
+  --ink-2: #0a0c12;
+  --panel: #0e1119;
+  --panel-2: #141822;
+  --line: rgba(232, 230, 225, 0.08);
+  --line-2: rgba(232, 230, 225, 0.16);
+  --text: #e8e6e1;
+  --muted: #a6adba;
+  --faint: #8e96a5;
+  --brand: #f44e04;
+  --brand-2: #ff8038;
+  --tint: #ffc7a3;
+  --gold: #e8a33d;
+  --machine: #4c7dff;
+
+  --ink-rgb: 6 7 10;
+  --brand-rgb: 244 78 4;
+  --brand2-rgb: 255 128 56;
+  --tint-rgb: 255 199 163;
+  --gold-rgb: 232 163 61;
+  --machine-rgb: 76 125 255;
+  --text-rgb: 232 230 225;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink-2);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-brand: var(--brand);
+  --color-brand2: var(--brand-2);
+  --color-tint: var(--tint);
+  --color-gold: var(--gold);
+  --color-machine: var(--machine);
+
+  --font-display: var(--font-archivo), "Archivo", system-ui, sans-serif;
+  --font-body: var(--font-inter-tight), "Inter Tight", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--ink);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgb(var(--brand-rgb) / 0.32);
+    color: var(--text);
+  }
+}
+
+/* The field's own scrim, previously inline in BackgroundField. Kept here so
+   the light theme can restate it against the light ground. */
+.field-veil {
+  background: radial-gradient(
+    ellipse 42rem 20rem at 50% 44%,
+    rgba(6, 7, 10, 0.62) 0%,
+    rgba(6, 7, 10, 0.34) 52%,
+    rgba(6, 7, 10, 0) 78%
+  );
+}
+
+/* ── Type ───────────────────────────────────────────────────────────────── */
+@layer components {
+  .t-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: 1;
+    color: var(--brand);
+  }
+
+  .t-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 7vw, 5.75rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+    color: var(--text);
+  }
+
+  /* Warm gradient on the product half of the headline only. */
+  .t-headline .warm {
+    background: linear-gradient(
+      96deg,
+      var(--tint) 0%,
+      var(--brand-2) 42%,
+      var(--gold) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .t-sub {
+    font-size: clamp(1rem, 1.5vw, 1.1875rem);
+    font-weight: 400;
+    line-height: 1.65;
+    max-width: 54ch;
+    color: var(--muted);
+  }
+
+  .t-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 3.6vw, 3.125rem);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.032em;
+    text-wrap: balance;
+    color: var(--text);
+  }
+
+  .t-lead {
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.62;
+    color: var(--muted);
+  }
+
+  .t-collabel {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .t-appname {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .t-appdoes {
+    font-size: 0.8125rem;
+    line-height: 1.42;
+    color: var(--faint);
+    margin-top: 0.1875rem;
+  }
+
+  .t-cta {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+
+  .t-nodelabel {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--faint);
+  }
+}
+
+/* ── Connector directory ────────────────────────────────────────────────────
+   Same anatomy as the reference: rounded logo tile, name plus a verified tick,
+   a description clamped to two lines, and a round action at the trailing edge.
+   The + marks are decorative — this is a landing page, so nothing here claims
+   to be a working control; the page's one real action is LAUNCH AGENT.
+   ─────────────────────────────────────────────────────────────────────────── */
+.dir-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.dir-all {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--brand-2);
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 180ms ease;
+}
+
+.dir-all:hover {
+  color: var(--tint);
+}
+
+.dir-all:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 3px;
+}
+
+.dir-card,
+.custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.9375rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    rgb(var(--text-rgb) / 0.045),
+    rgb(var(--text-rgb) / 0.018)
+  );
+  transition:
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.dir-card {
+  min-height: 96px;
+}
+
+.custom-row {
+  max-width: 26rem;
+}
+
+@media (hover: hover) {
+  .dir-card:hover,
+  .custom-row:hover {
+    border-color: rgb(var(--brand-rgb) / 0.34);
+    background: linear-gradient(
+      180deg,
+      rgb(var(--brand-rgb) / 0.07),
+      rgb(var(--text-rgb) / 0.02)
+    );
+  }
+}
+
+.dir-tile {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--text-rgb) / 0.08),
+    rgb(var(--text-rgb) / 0.025)
+  );
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgb(var(--text-rgb) / 0.06);
+}
+
+.dir-tile svg {
+  display: block;
+  /* the mark's two tones ride on the element; this picks the dark-ground one */
+  --mark: var(--mark-dark);
+}
+
+.dir-tile-glyph {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--machine);
+}
+
+.dir-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+
+.verified {
+  flex: none;
+  color: var(--faint);
+  opacity: 0.75;
+}
+
+.dir-does {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--faint);
+}
+
+.dir-host {
+  display: block;
+  margin-top: 0.1875rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--faint);
+}
+
+.chip {
+  flex: none;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.dir-action {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgb(var(--text-rgb) / 0.05);
+  color: var(--muted);
+  transition:
+    border-color 200ms ease,
+    background 200ms ease,
+    color 200ms ease;
+}
+
+.dir-action.is-on {
+  border-color: rgb(var(--brand-rgb) / 0.45);
+  background: rgb(var(--brand-rgb) / 0.16);
+  color: var(--brand-2);
+}
+
+@media (hover: hover) {
+  .dir-card:hover .dir-action {
+    border-color: rgb(var(--brand-rgb) / 0.5);
+    background: rgb(var(--brand-rgb) / 0.14);
+    color: var(--brand-2);
+  }
+}
+
+/* ── CTA: solid brand, ink label (5.7:1), live halo ─────────────────────── */
+.cta-enter {
+  position: relative;
+  display: inline-flex;
+  opacity: 0;
+  animation: cta-enter 460ms cubic-bezier(0.22, 1, 0.36, 1) 800ms forwards;
+}
+
+.cta-enter::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    rgb(var(--brand-rgb) / 0.85),
+    rgb(var(--gold-rgb) / 0.7),
+    rgb(var(--brand2-rgb) / 0.9),
+    rgb(var(--machine-rgb) / 0.45),
+    rgb(var(--brand-rgb) / 0.85)
+  );
+  filter: blur(28px);
+  opacity: 0.55;
+  animation: halo-turn 9s linear infinite;
+  transition: opacity 260ms ease;
+  z-index: 0;
+}
+
+.cta-enter:hover::before {
+  opacity: 0.9;
+}
+
+.cta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6875rem;
+  min-height: 54px;
+  min-width: 48px;
+  padding: 1.125rem 2.375rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--tint-rgb) / 0.35);
+  background: linear-gradient(180deg, var(--brand-2) 0%, var(--brand) 62%);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow:
+    0 14px 40px -16px rgb(var(--brand-rgb) / 0.9),
+    inset 0 1px 0 rgb(var(--tint-rgb) / 0.55);
+  transform: translateZ(0);
+  transition:
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .cta:hover {
+    transform: scale(1.02);
+    box-shadow:
+      0 20px 62px -16px rgb(var(--brand-rgb) / 1),
+      inset 0 1px 0 rgb(var(--tint-rgb) / 0.7);
+  }
+}
+
+.cta:active {
+  transform: scale(0.98);
+  transition:
+    transform 80ms ease-out,
+    box-shadow 80ms ease-out;
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 4px;
+}
+
+.cta-mark {
+  font-family: var(--font-mono), "Segoe UI Symbol", "Apple Symbols", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1;
+  translate: 0 -0.5px;
+}
+
+/* ── Chrome: header and footer ──────────────────────────────────────────── */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  padding: clamp(0.875rem, 2.2vh, 1.375rem) 1.5rem;
+}
+
+/*
+  The scrim lives on a pseudo-element, not the header itself, so it can be
+  masked to nothing at its lower edge without taking the logo's opacity with
+  it. It also overhangs the header, which is what removes the seam: the blur
+  and the tint both run out before the boundary does.
+*/
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -2.25rem 0;
+  z-index: -1;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    180deg,
+    rgb(var(--ink-rgb) / 0.86) 0%,
+    rgb(var(--ink-rgb) / 0.52) 54%,
+    rgb(var(--ink-rgb) / 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 44%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 44%, transparent 100%);
+}
+
+.site-header-inner {
+  position: relative;
+}
+
+.site-header-inner,
+.site-footer-inner {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 76rem;
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* The logo is artwork, not a glyph — give the hit target the padding instead
+   of scaling the image up to meet it. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  margin: -0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.625rem;
+  text-decoration: none;
+  transition: opacity 200ms ease;
+}
+
+@media (hover: hover) {
+  .brand:hover {
+    opacity: 0.82;
+  }
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 2px;
+}
+
+.brand img {
+  display: block;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 1.75rem);
+}
+
+/* ── Theme switch ─────────────────────────────────────────────────
+   Two fixed halves with the brand pill sliding between them. Both glyphs stay
+   on screen: the inactive one dims rather than swapping out, which is what
+   makes this read as a switch instead of a status light. Built entirely from
+   the same tokens as everything else, so it needs no light-theme override
+   beyond the ones the tokens already carry.
+   ─────────────────────────────────────────────────────────────── */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgb(var(--text-rgb) / 0.05);
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+@media (hover: hover) {
+  .theme-toggle:hover {
+    border-color: rgb(var(--brand-rgb) / 0.45);
+    background: rgb(var(--brand-rgb) / 0.08);
+  }
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 3px;
+}
+
+/* the moving part: 50% of the track, offset by the checked state */
+.theme-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: 28px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brand-2) 0%, var(--brand) 70%);
+  box-shadow:
+    0 4px 12px -4px rgb(var(--brand-rgb) / 0.8),
+    inset 0 1px 0 rgb(var(--tint-rgb) / 0.5);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb {
+  transform: translateX(28px);
+}
+
+.theme-toggle-face {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  color: var(--faint);
+  transition:
+    color 200ms ease,
+    opacity 200ms ease;
+}
+
+/* whichever face the pill is under is the active one, and it inks up */
+.theme-toggle[aria-checked="false"] .theme-toggle-face:first-of-type,
+.theme-toggle[aria-checked="true"] .theme-toggle-face:last-of-type {
+  color: var(--cta-ink, var(--ink));
+  opacity: 1;
+}
+
+.theme-toggle[aria-checked="false"] .theme-toggle-face:last-of-type,
+.theme-toggle[aria-checked="true"] .theme-toggle-face:first-of-type {
+  opacity: 0.7;
+}
+
+@media (hover: hover) {
+  .theme-toggle:hover .theme-toggle-face {
+    opacity: 1;
+  }
+}
+
+/* ── Logo pair ─────────────────────────────────────────────────────
+   Both assets are in the markup; CSS picks. display:none also drops the hidden
+   one out of the accessibility tree, so the wordmark is announced once.
+   Qualified with img so this outranks .brand img above, which would otherwise
+   put both of them on screen. */
+img.logo-art-light {
+  display: none;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.5rem 0.125rem;
+  border-radius: 0.375rem;
+  transition: color 200ms ease;
+}
+
+@media (hover: hover) {
+  .nav-link:hover {
+    color: var(--text);
+  }
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 4px;
+}
+
+.site-footer {
+  position: relative;
+  width: 100%;
+  padding: clamp(3rem, 8vh, 4.5rem) 1.5rem clamp(2.5rem, 6vh, 3.5rem);
+  border-top: 1px solid var(--line);
+  /* seals the page against the fixed field, so the footer reads as ground */
+  background: linear-gradient(180deg, rgb(var(--ink-rgb) / 0.72) 0%, var(--ink) 62%);
+}
+
+.site-footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.125rem;
+  text-align: center;
+}
+
+.footer-note {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+.footer-legal {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+/* The fixed header must not land on a heading the nav just jumped to. */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* ── Entrance choreography ──────────────────────────────────────────────── */
+.rise {
+  opacity: 0;
+  animation: rise 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cta-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes halo-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* live dot next to the eyebrow */
+.pip {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--brand);
+  box-shadow: 0 0 12px 2px rgb(var(--brand-rgb) / 0.8);
+  animation: pip 2.4s ease-in-out infinite;
+}
+
+@keyframes pip {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+/* ── Network ────────────────────────────────────────────────────────────── */
+.net-svg {
+  overflow: visible;
+}
+
+@media (min-width: 640px) {
+  /* Geometry keeps full strength in the margins and drops under the type. */
+  .net-svg {
+    -webkit-mask-image: radial-gradient(
+      ellipse 44rem 16rem at 50% 54%,
+      rgb(0 0 0 / 0.42) 0%,
+      rgb(0 0 0 / 0.6) 42%,
+      rgb(0 0 0 / 1) 76%
+    );
+    mask-image: radial-gradient(
+      ellipse 44rem 16rem at 50% 54%,
+      rgb(0 0 0 / 0.42) 0%,
+      rgb(0 0 0 / 0.6) 42%,
+      rgb(0 0 0 / 1) 76%
+    );
+  }
+}
+
+.net-core {
+  opacity: 0;
+  animation: net-fade 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.net-breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: net-breathe 4s ease-in-out infinite;
+}
+
+.net-edge {
+  opacity: 0;
+  animation: net-draw 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.net-node,
+.net-label,
+.net-weak {
+  opacity: 0;
+  animation: net-fade 460ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes net-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes net-draw {
+  from {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes net-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME
+   ══════════════════════════════════════════════════════════════════════════
+   Everything above this line is the dark theme and is left exactly as it was.
+   The light theme is additive: it restates the tokens, then overrides only the
+   handful of rules whose values were reasoned about against black and cannot
+   survive a change of ground.
+
+   Three things do not carry over automatically, and each is fixed below:
+
+     · warm text — #F44E04 clears 4.5:1 on #06070A but lands near 3:1 on cream,
+       so brand-as-text moves to --accent, a deeper cut of the same hue. The
+       brand orange itself is untouched wherever it is a surface: the CTA, the
+       switch, every glow.
+     · lift — a dark card is a white film over black. Invert that and you get a
+       grey smudge, so the cards become white over cream and carry a shadow
+       instead, which is where depth comes from on paper.
+     · ink on brand — the CTA label is --ink, which is now the page ground, so
+       it gets its own token rather than inheriting a cream-on-orange 3:1.
+
+   Ground is #FAF9F5: warm, low-glare, the same family of off-white the mesh
+   was already painting onto black.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root[data-theme="light"] {
+  --ink: #faf9f5;
+  --ink-2: #f3f1e9;
+  --panel: #ffffff;
+  --panel-2: #f5f3ec;
+  --line: rgba(41, 37, 30, 0.12);
+  --line-2: rgba(41, 37, 30, 0.2);
+  --text: #1c1b19;
+  --muted: #55504a;
+  --faint: #6f6960;
+
+  /* the warm ramp is the brand and does not change — it is used as surface */
+  --brand: #f44e04;
+  --brand-2: #ff8038;
+  --tint: #ffc7a3;
+  --gold: #e8a33d;
+  /* except machine blue, which is a line colour and has to hold on cream */
+  --machine: #3454ce;
+
+  --ink-rgb: 250 249 245;
+  --text-rgb: 28 27 25;
+  --machine-rgb: 52 84 206;
+
+  /* light-only roles */
+  --accent: #c33d02; /* brand as text: 4.9:1 on the ground */
+  --focus: #b03a05;
+  --cta-ink: #2b1104; /* label on a brand-orange fill: 5.6:1 */
+
+  color-scheme: light;
+}
+
+/* ── Ground and field ───────────────────────────────────────────────────── */
+:root[data-theme="light"] .field-veil {
+  background: radial-gradient(
+    ellipse 42rem 20rem at 50% 44%,
+    rgb(var(--ink-rgb) / 0.78) 0%,
+    rgb(var(--ink-rgb) / 0.46) 52%,
+    rgb(var(--ink-rgb) / 0) 78%
+  );
+}
+
+[data-theme="light"] ::selection {
+  background: rgb(var(--brand-rgb) / 0.22);
+}
+
+/* ── Type ───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .t-eyebrow {
+  color: var(--accent);
+}
+
+[data-theme="light"] .t-headline .warm {
+  background: linear-gradient(
+    96deg,
+    #e0530b 0%,
+    #c23c02 44%,
+    #a06a10 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ── Logo pair ──────────────────────────────────────────────────────────── */
+[data-theme="light"] img.logo-art-dark {
+  display: none;
+}
+
+[data-theme="light"] img.logo-art-light {
+  display: block;
+}
+
+/* ── Chrome ─────────────────────────────────────────────────────────────── */
+[data-theme="light"] .brand:focus-visible,
+[data-theme="light"] .nav-link:focus-visible,
+[data-theme="light"] .dir-all:focus-visible,
+[data-theme="light"] .cta:focus-visible,
+[data-theme="light"] .theme-toggle:focus-visible {
+  outline-color: var(--focus);
+}
+
+[data-theme="light"] .theme-toggle {
+  background: rgb(var(--text-rgb) / 0.04);
+}
+
+/* ── CTA ────────────────────────────────────────────────────────────────── */
+[data-theme="light"] .cta {
+  color: var(--cta-ink);
+  border-color: rgb(var(--text-rgb) / 0.08);
+  box-shadow:
+    0 14px 34px -18px rgb(var(--brand-rgb) / 0.85),
+    inset 0 1px 0 rgb(255 255 255 / 0.4);
+}
+
+@media (hover: hover) {
+  [data-theme="light"] .cta:hover {
+    box-shadow:
+      0 20px 52px -18px rgb(var(--brand-rgb) / 0.95),
+      inset 0 1px 0 rgb(255 255 255 / 0.55);
+  }
+}
+
+/* the halo is light spilling past the button — on paper it wants less of it */
+[data-theme="light"] .cta-enter::before {
+  filter: blur(30px);
+  opacity: 0.4;
+}
+
+[data-theme="light"] .cta-enter:hover::before {
+  opacity: 0.62;
+}
+
+/* ── Connector directory ────────────────────────────────────────────────── */
+[data-theme="light"] .dir-all {
+  color: var(--accent);
+}
+
+[data-theme="light"] .dir-all:hover {
+  color: var(--brand);
+}
+
+[data-theme="light"] .dir-card,
+[data-theme="light"] .custom-row {
+  background: linear-gradient(180deg, #ffffff 0%, #fdfcf9 100%);
+  box-shadow: 0 1px 2px rgb(var(--text-rgb) / 0.05);
+}
+
+@media (hover: hover) {
+  [data-theme="light"] .dir-card:hover,
+  [data-theme="light"] .custom-row:hover {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--brand-rgb) / 0.05) 0%,
+      #ffffff 100%
+    );
+    box-shadow: 0 6px 18px -10px rgb(var(--brand-rgb) / 0.4);
+  }
+}
+
+[data-theme="light"] .dir-tile {
+  background: linear-gradient(180deg, #ffffff 0%, #f4f2ea 100%);
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+/* a mark drawn for white ground gets its untouched brand hue back */
+[data-theme="light"] .dir-tile svg {
+  --mark: var(--mark-light);
+}
+
+[data-theme="light"] .dir-action {
+  background: rgb(var(--text-rgb) / 0.035);
+}
+
+[data-theme="light"] .dir-action.is-on {
+  background: rgb(var(--brand-rgb) / 0.1);
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  [data-theme="light"] .dir-card:hover .dir-action {
+    background: rgb(var(--brand-rgb) / 0.1);
+    color: var(--accent);
+  }
+}
+
+/* ── Hero network ───────────────────────────────────────────────────────── */
+/* Stroke opacities tuned so orange reads as a hairline on black; on cream the
+   same values sit under the threshold, so the geometry is walked up. */
+[data-theme="light"] .net-edge {
+  stroke-opacity: 0.3;
+}
+
+[data-theme="light"] .net-weak {
+  stroke-opacity: 0.14;
+}
+
+[data-theme="light"] .pip {
+  box-shadow: 0 0 10px 1px rgb(var(--brand-rgb) / 0.45);
+}
