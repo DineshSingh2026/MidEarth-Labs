@@ -1,4 +1,5 @@
-import type { NextAuthOptions } from "next-auth";
+import { getServerSession, type NextAuthOptions } from "next-auth";
+import { unstable_rethrow } from "next/navigation";
 import type { Provider } from "next-auth/providers/index";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import GitHubProvider from "next-auth/providers/github";
@@ -17,6 +18,19 @@ export type ProviderId = "google" | "azure-ad" | "github";
 
 const env = (name: string) => process.env[name]?.trim() || undefined;
 
+const secret = env("NEXTAUTH_SECRET");
+
+/**
+ * NextAuth refuses to run in production without a secret and answers every
+ * request with a 500. Until one is set, auth stands down instead: the sign-in
+ * page still renders, and the OAuth buttons report that they are unavailable.
+ */
+export const authReady = Boolean(secret) || process.env.NODE_ENV !== "production";
+
+if (!authReady) {
+  console.warn("[auth] NEXTAUTH_SECRET is not set; sign in is disabled.");
+}
+
 const google = { id: env("GOOGLE_CLIENT_ID"), secret: env("GOOGLE_CLIENT_SECRET") };
 const microsoft = {
   id: env("AZURE_AD_CLIENT_ID"),
@@ -27,9 +41,9 @@ const microsoft = {
 const github = { id: env("GITHUB_CLIENT_ID"), secret: env("GITHUB_CLIENT_SECRET") };
 
 export const configuredProviders: Record<ProviderId, boolean> = {
-  google: Boolean(google.id && google.secret),
-  "azure-ad": Boolean(microsoft.id && microsoft.secret),
-  github: Boolean(github.id && github.secret),
+  google: authReady && Boolean(google.id && google.secret),
+  "azure-ad": authReady && Boolean(microsoft.id && microsoft.secret),
+  github: authReady && Boolean(github.id && github.secret),
 };
 
 const providers: Provider[] = [];
@@ -62,8 +76,21 @@ if (github.id && github.secret) {
 
 export const authOptions: NextAuthOptions = {
   providers,
-  secret: env("NEXTAUTH_SECRET"),
+  secret,
   session: { strategy: "jwt" },
   // our own card instead of the built-in page, for both sign-in and errors
   pages: { signIn: "/signin", error: "/signin" },
 };
+
+/** The current session, or null when auth is off or the lookup fails. */
+export async function readSession() {
+  if (!authReady) return null;
+  try {
+    return await getServerSession(authOptions);
+  } catch (error) {
+    // Next signals dynamic rendering by throwing; that must pass through
+    unstable_rethrow(error);
+    console.error("[auth] session lookup failed", error);
+    return null;
+  }
+}

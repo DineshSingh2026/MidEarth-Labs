@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 
 import BackgroundField from "@/components/BackgroundField";
 import SignInCard from "@/components/SignInCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
-import { authOptions, configuredProviders } from "@/lib/auth";
+import { configuredProviders, readSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Sign in | MidEarth Labs",
@@ -46,7 +45,7 @@ const PILLARS: Pillar[] = [
 type Props = { searchParams: Promise<{ error?: string | string[] }> };
 
 export default async function SignInPage({ searchParams }: Props) {
-  const [session, { error }] = await Promise.all([getServerSession(authOptions), searchParams]);
+  const [session, { error }] = await Promise.all([readSession(), searchParams]);
   const user = session?.user
     ? { name: session.user.name ?? null, email: session.user.email ?? null }
     : null;
