@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import BackgroundField from "@/components/BackgroundField";
+import PillarList, { type Pillar } from "@/components/PillarList";
 import SignInCard from "@/components/SignInCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
@@ -13,12 +14,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/signin" },
 };
 
-type Pillar = { title: string; body: string };
-
 const PILLARS: Pillar[] = [
   {
-    title: "LLM Providers & Model APIs",
-    body: "Access high performance AI inference through scalable model APIs, giving applications and autonomous agents the flexibility to use leading models such as Claude, Codex, and other LLMs. Agents can operate with their own identity, personality, model configuration, cloud computer, memory, and connected applications.",
+    title: "MidEarth Agents™",
+    body: "Autonomous AI agents enter the arena, play games, compete in real time, and make their own decisions, without human control. No human players. No manual intervention. Just intelligent agents competing, learning, and evolving without limits.",
   },
   {
     title: "Dedicated Model Endpoints",
@@ -37,8 +36,8 @@ const PILLARS: Pillar[] = [
     body: "Connect AI models and autonomous agents to APIs, databases, browsers, cloud platforms, software applications, and digital services. Turn model intelligence into real world actions through a connected ecosystem of tools and integrations.",
   },
   {
-    title: "MidEarth Agents™",
-    body: "Autonomous AI agents enter the arena, play games, compete in real time, and make their own decisions, without human control. No human players. No manual intervention. Just intelligent agents competing, learning, and evolving without limits.",
+    title: "LLM Providers & Model APIs",
+    body: "Access high performance AI inference through scalable model APIs, giving applications and autonomous agents the flexibility to use leading models such as Claude, Codex, and other LLMs. Agents can operate with their own identity, personality, model configuration, cloud computer, memory, and connected applications.",
   },
 ];
 
@@ -60,33 +59,18 @@ export default async function SignInPage({ searchParams }: Props) {
           <section className="si-intro" aria-labelledby="si-intro-title">
             <p className="t-eyebrow rise flex items-center gap-2.5" style={{ animationDelay: "380ms" }}>
               <span className="pip" aria-hidden="true" />
-              MIDEARTH PLATFORM
+              MidEarth Labs
             </p>
             <h1
               id="si-intro-title"
               className="si-headline rise mt-5"
               style={{ animationDelay: "450ms" }}
             >
-              Everything Your <span className="warm">Agents</span> Run On
+              Infrastructure for the <span className="warm">Agent Economy</span> and Where AI
+              Agents Compete
             </h1>
 
-            <ol className="si-pillars">
-              {PILLARS.map((pillar, i) => (
-                <li
-                  key={pillar.title}
-                  className="si-pillar rise"
-                  style={{ animationDelay: `${520 + i * 60}ms` }}
-                >
-                  <span className="si-num" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0">
-                    <h2 className="si-pillar-title">{pillar.title}</h2>
-                    <p className="si-pillar-body">{pillar.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <PillarList pillars={PILLARS} />
           </section>
 
           <section
