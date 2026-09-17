@@ -1,3 +1,4 @@
+import HeaderAuth from "./HeaderAuth";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 
@@ -7,7 +8,7 @@ import ThemeToggle from "./ThemeToggle";
  * that overhangs the header and masks out at its lower edge, so content
  * scrolling under stays dimmed without a hard seam across the page.
  */
-export default function SiteHeader() {
+export default function SiteHeader({ signIn = true }: { signIn?: boolean }) {
   return (
     <header className="site-header rise" style={{ animationDelay: "300ms" }}>
       <div className="site-header-inner">
@@ -17,12 +18,15 @@ export default function SiteHeader() {
 
         <div className="header-actions">
           <nav aria-label="Primary">
-            <a className="nav-link" href="#integrations">
+            <a className="nav-link" href="/#integrations">
               Integrations
             </a>
           </nav>
 
           <ThemeToggle />
+
+          {/* hidden on the sign-in page itself, where it would point at itself */}
+          {signIn && <HeaderAuth />}
         </div>
       </div>
     </header>
